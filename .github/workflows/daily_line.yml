@@ -1,4 +1,4 @@
-name: 毎日の鳥 LINE Bot
+name: 毎日タロット LINE Bot
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  send-bird:
+  send-tarot:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +21,7 @@ jobs:
       - name: 依存ライブラリをインストール
         run: pip install anthropic requests
 
-      - name: 今日の鳥を送信
+      - name: 今日のタロットを送信
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
