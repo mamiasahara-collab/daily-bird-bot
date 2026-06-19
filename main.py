@@ -98,36 +98,33 @@ TAROT_CARDS = [
 ]
 
 
-def select_card_for_date(date_str: str) -> tuple[str, str, bool]:
+def select_card_for_date(date_str: str) -> tuple[str, str]:
     hash_val = int(hashlib.md5(date_str.encode()).hexdigest(), 16)
     index = hash_val % len(TAROT_CARDS)
-    is_reversed = (hash_val // len(TAROT_CARDS)) % 2 == 1
-    return TAROT_CARDS[index][0], TAROT_CARDS[index][1], is_reversed
+    return TAROT_CARDS[index]
 
 
-def get_today_tarot_message(card_name: str, is_reversed: bool) -> str:
+def get_today_tarot_message(card_name: str) -> str:
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-
-    position = "逆位置" if is_reversed else "正位置"
-    position_emoji = "🔄" if is_reversed else "✨"
 
     message = client.messages.create(
         model="claude-haiku-4-5-20251001",
-        max_tokens=600,
+        max_tokens=800,
         messages=[
             {
                 "role": "user",
-                "content": f"""タロットカード「{card_name}」の{position}を紹介してください。
+                "content": f"""タロットカード「{card_name}」を紹介してください。
 
 条件：
-- 以下のフォーマットで、200字前後で書いてください
+- 以下のフォーマットで書いてください
 - フォーマット以外の余分な文章は一切追加しないでください
 
 フォーマット：
-🔮 今日のカード：{card_name}（{position}）
+🔮 今日のカード：{card_name}
 🖼️ 絵柄：[カードに描かれているものを1〜2文で]
-{position_emoji} 意味：[{position}のキーワードと象徴するものを2〜3文で]
-💬 今日のメッセージ：[日常生活へのヒントを1文で]""",
+✨ 正位置の意味：[キーワードと象徴するものを2文で]
+🔄 逆位置の意味：[キーワードと象徴するものを2文で]
+💬 覚えるヒント：[このカードを記憶に残しやすくするひとことを1文で]""",
             }
         ],
     )
@@ -170,13 +167,12 @@ def send_line_message(text: str, image_url: str) -> None:
 
 def main():
     today = datetime.now(JST).strftime("%Y-%m-%d")
-    card_name, image_file, is_reversed = select_card_for_date(today)
+    card_name, image_file = select_card_for_date(today)
     image_url = f"{BASE_IMAGE_URL}/{image_file}"
-    position = "逆位置" if is_reversed else "正位置"
-    print(f"[{today}] 今日のカード：{card_name}（{position}）")
+    print(f"[{today}] 今日のカード：{card_name}")
 
     try:
-        message = get_today_tarot_message(card_name, is_reversed)
+        message = get_today_tarot_message(card_name)
     except anthropic.APIError as e:
         print(f"Claude APIエラー: {e}", file=sys.stderr)
         sys.exit(1)
