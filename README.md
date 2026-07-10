@@ -32,10 +32,6 @@
 3. 「チャネル作成」→「Messaging API」を選択
 4. チャネル作成後、「Messaging API設定」タブを開く
 5. 「チャネルアクセストークン（長期）」の「発行」ボタンをクリックしてコピー（`LINE_CHANNEL_ACCESS_TOKEN`）
-6. 自分のLINEアカウントのユーザーIDを確認する（下記参照）
-
-**ユーザーIDの確認方法：**
-- 「チャネル基本設定」→「あなたのユーザーID」に表示されています（`LINE_USER_ID`）
 
 ---
 
@@ -45,13 +41,12 @@ GitHubのリポジトリページで：
 
 1. 上部の「Settings」タブをクリック
 2. 左メニュー「Secrets and variables」→「Actions」を開く
-3. 「New repository secret」ボタンで以下の3つを登録する
+3. 「New repository secret」ボタンで以下の2つを登録する
 
 | Name | 値 |
 |------|-----|
 | `ANTHROPIC_API_KEY` | Anthropicのダッシュボードで取得したAPIキー |
 | `LINE_CHANNEL_ACCESS_TOKEN` | LINE Developersで発行したトークン |
-| `LINE_USER_ID` | 自分のLINEユーザーID |
 
 ---
 

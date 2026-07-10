@@ -134,15 +134,13 @@ def get_today_tarot_message(card_name: str) -> str:
 
 def send_line_message(text: str, image_url: str) -> None:
     token = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
-    user_id = os.environ["LINE_USER_ID"]
 
-    url = "https://api.line.me/v2/bot/message/push"
+    url = "https://api.line.me/v2/bot/message/broadcast"
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {token}",
     }
     payload = {
-        "to": user_id,
         "messages": [
             {
                 "type": "image",
