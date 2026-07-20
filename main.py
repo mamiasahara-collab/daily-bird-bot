@@ -1,5 +1,5 @@
-import hashlib
 import os
+import random
 import sys
 from datetime import datetime, timezone, timedelta
 
@@ -7,6 +7,7 @@ import anthropic
 import requests
 
 JST = timezone(timedelta(hours=9))
+EPOCH_DATE = datetime(2026, 1, 1, tzinfo=JST)
 
 BASE_IMAGE_URL = "https://raw.githubusercontent.com/searge/tarot/master/assets/img/big"
 
@@ -99,9 +100,14 @@ TAROT_CARDS = [
 
 
 def select_card_for_date(date_str: str) -> tuple[str, str]:
-    hash_val = int(hashlib.md5(date_str.encode()).hexdigest(), 16)
-    index = hash_val % len(TAROT_CARDS)
-    return TAROT_CARDS[index]
+    target_date = datetime.strptime(date_str, "%Y-%m-%d").replace(tzinfo=JST)
+    days_since_epoch = (target_date - EPOCH_DATE).days
+
+    cycle_number, position = divmod(days_since_epoch, len(TAROT_CARDS))
+
+    shuffled_cards = TAROT_CARDS.copy()
+    random.Random(cycle_number).shuffle(shuffled_cards)
+    return shuffled_cards[position]
 
 
 def get_today_tarot_message(card_name: str) -> str:
